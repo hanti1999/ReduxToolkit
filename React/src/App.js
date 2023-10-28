@@ -1,28 +1,20 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { increment, decrement } from './redux/slices/counterSlide';
+// import { increment, decrement } from './redux/slices/counterSlide';
 
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { fetchAllUsers } from './redux/slices/userSlide';
 
 function App() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const count = useSelector((state) => state.counter.value);
-
-  const fetchAllUser = async () => {
-    setLoading(true);
-    let res = await axios('http://localhost:8080/users/all');
-
-    setLoading(false);
-    setUsers(res.data ? res.data : []);
-    console.log(res.data);
-  };
+  // const count = useSelector((state) => state.counter.value);
+  const users = useSelector((state) => state.user.listUsers);
+  const loading = useSelector((state) => state.user.loading);
+  const error = useSelector((state) => state.user.error);
 
   useEffect(() => {
-    fetchAllUser();
+    dispatch(fetchAllUsers());
   }, []);
 
   return (
@@ -50,6 +42,11 @@ function App() {
               {loading === true && (
                 <tr>
                   <td>Loading...</td>
+                </tr>
+              )}
+              {error === true && (
+                <tr>
+                  <td>Có lỗi xảy ra</td>
                 </tr>
               )}
               {users &&
